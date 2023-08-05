@@ -1,0 +1,13 @@
+# /etc/systemd/system/observe_myapp6.service
+[Unit]
+Description=Observe Script Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /var/www/myapp6/myapp6/observe.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
