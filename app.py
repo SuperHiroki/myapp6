@@ -67,7 +67,7 @@ def add_user():
 def get_rooms():
     active_rooms = Room.query.filter_by(active=True).all()
     if active_rooms:
-        rooms = [{'roomID': r.roomID, 'username': r.host} for r in active_rooms]
+        rooms = [{'roomId': r.roomID, 'username': r.host} for r in active_rooms]
         return jsonify(rooms)
     else:
         return jsonify({'message': 'No active rooms.'}), 404
@@ -82,14 +82,14 @@ def add_room():
         db.session.commit()
         return jsonify({'message': 'Room activity updated!'}), 200
     else:
-        new_room = Room(roomID=data['roomID'], active=True, host=data['host'])
+        new_room = Room(roomID=data['roomId'], active=True, host=data['host'])
         db.session.add(new_room)
         db.session.commit()
         return jsonify({'message': 'Room added!'}), 201
     
-@app.route('/room/<roomID>/heartbeat', methods=['POST'])
-def room_heartbeat(roomID):
-    room = Room.query.filter_by(roomID=roomID).first()
+@app.route('/room/<roomId>/heartbeat', methods=['POST'])
+def room_heartbeat(roomId):
+    room = Room.query.filter_by(roomID=roomId).first()
     if room:
         jst = timezone('Asia/Tokyo')
         current_jst_time = datetime.now(jst).replace(microsecond=0)
