@@ -67,7 +67,7 @@ def add_user():
 def get_rooms():
     active_rooms = Room.query.filter_by(active=True).all()
     if active_rooms:
-        rooms = [{'roomId': r.roomID, 'username': r.host} for r in active_rooms]
+        rooms = [{'roomId': r.roomID, 'host': r.host} for r in active_rooms]
         return jsonify(rooms)
     else:
         return jsonify({'message': 'No active rooms.'}), 404
