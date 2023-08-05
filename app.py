@@ -76,7 +76,7 @@ def get_rooms():
 def add_room():
     app.logger.debug(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  add_room.")
     data = request.get_json()
-    room = Room.query.filter_by(roomID=data['roomID']).first()
+    room = Room.query.filter_by(roomID=data['roomId']).first()
     if room:
         room.active = True
         db.session.commit()
