@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp6user:140286TakaHi
 db = SQLAlchemy(app)
 
 app.config['SQLALCHEMY_ECHO'] = True
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.INFO)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
