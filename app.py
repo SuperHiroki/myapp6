@@ -57,9 +57,13 @@ def add_user():
     if User.query.filter_by(username=data['username']).first():
         return jsonify({'message': 'Username already exists.'}), 400
     new_user = User(username=data['username'], password=data['password'], userLevel=1)
-    new_character = Character(characterId=0, characterLevel=1, owner=data['username'])
+    new_character = Character(characterId=0, characterLevel=3, owner=data['username'])
+    new_character_2 = Character(characterId=1, characterLevel=5, owner=data['username'])
+    new_character_3 = Character(characterId=2, characterLevel=4, owner=data['username'])
     db.session.add(new_user)
     db.session.add(new_character)
+    db.session.add(new_character_2)
+    db.session.add(new_character_3)
     db.session.commit()
     return jsonify({'message': 'User added!'}), 201
 
