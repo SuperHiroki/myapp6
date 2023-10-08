@@ -17,6 +17,8 @@ class User(db.Model):
     username = db.Column(db.String(240), unique=True, nullable=False)
     password = db.Column(db.String(360), nullable=False)
     userLevel = db.Column(db.Integer, nullable=False)
+    experience = db.Column(db.Integer, nullable=False)
+    magicStone = db.Column(db.Integer, nullable=False)
     characters = db.relationship('Character', backref='owner_rel', lazy=True)
     rooms = db.relationship('Room', backref='host_rel', lazy=True)
 
@@ -24,6 +26,9 @@ class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     characterId = db.Column(db.Integer, nullable=False)
     characterLevel = db.Column(db.Integer, nullable=False)
+    awakening = db.Column(db.Integer, nullable=False)
+    reliability = db.Column(db.Integer, nullable=False)
+    experience = db.Column(db.Integer, nullable=False)
     owner = db.Column(db.String(240), db.ForeignKey('user.username'), nullable=False)
 
 class Room(db.Model):
@@ -45,7 +50,9 @@ def get_user(username):
             'username': user.username,
             'password': user.password,
             'userLevel': user.userLevel,
-            'characters': [{'characterId': c.characterId, 'characterLevel': c.characterLevel} for c in user.characters]
+            'experience': user.experience,
+            'magicStone': user.magicStone,
+            'characters': [{'characterId': c.characterId, 'characterLevel': c.characterLevel, 'awakening': c.awakening, 'reliability': c.reliability, 'experience': c.experience} for c in user.characters]
         }
         return jsonify(user_data)
     else:
@@ -56,10 +63,10 @@ def add_user():
     data = request.get_json()
     if User.query.filter_by(username=data['username']).first():
         return jsonify({'message': 'Username already exists.'}), 400
-    new_user = User(username=data['username'], password=data['password'], userLevel=1)
-    new_character = Character(characterId=0, characterLevel=3, owner=data['username'])
-    new_character_2 = Character(characterId=1, characterLevel=5, owner=data['username'])
-    new_character_3 = Character(characterId=2, characterLevel=4, owner=data['username'])
+    new_user = User(username=data['username'], password=data['password'], userLevel=1, experience=0, magicStone=0)
+    new_character = Character(characterId=0, characterLevel=3, awakening=0, reliability=0, experience=0, owner=data['username'])
+    new_character_2 = Character(characterId=1, characterLevel=5, awakening=0, reliability=0, experience=0, owner=data['username'])
+    new_character_3 = Character(characterId=2, characterLevel=4, awakening=0, reliability=0, experience=0, owner=data['username'])
     db.session.add(new_user)
     db.session.add(new_character)
     db.session.add(new_character_2)
@@ -72,7 +79,7 @@ def get_rooms():
     active_rooms = Room.query.filter_by(active=True).all()
     if active_rooms:
         rooms = [{'roomId': r.roomID, 'host': r.host} for r in active_rooms]
-        return jsonify(rooms)
+        return jsonify(rooms)#リスト型で送信しちゃった
     else:
         return jsonify({'message': 'No active rooms.'}), 404
     
