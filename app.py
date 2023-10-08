@@ -110,6 +110,38 @@ def room_heartbeat(roomId):
     else:
         return jsonify({'message': 'Room not found.'}), 404
 
+@app.route('/user/save', methods=['POST'])
+def save_user_data():
+    data = request.get_json()
+    if not data:
+        return jsonify({'message': 'Bad Request'}), 400
+    username = data.get('username')
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({'message': 'User not found!'}), 404
+    # ユーザの基本情報をアップデート
+    user.userLevel = data.get('userLevel')
+    user.experience = data.get('experience')
+    user.magicStone = data.get('magicStone')
+    # キャラクター情報のアップデート
+    for char_data in data.get('characters'):
+        character = Character.query.filter_by(owner=username, characterId=char_data.get('characterId')).first()
+        if character:
+            character.characterLevel = char_data.get('characterLevel')
+            character.awakening = char_data.get('awakening')
+            character.reliability = char_data.get('reliability')
+            character.experience = char_data.get('experience')
+        else:
+            new_character = Character(characterId=char_data.get('characterId'), characterLevel=char_data.get('characterLevel'), awakening=char_data.get('awakening'), reliability=char_data.get('reliability'), experience=char_data.get('experience'), owner=username )
+            db.session.add(new_character)
+    try:
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(f"Failed to save user data: {str(e)}")
+        db.session.rollback()
+        return jsonify({'message': 'Internal Server Error'}), 500
+    return jsonify({'message': 'User data updated successfully'}), 201
+
 
 with app.app_context():
     db.create_all()
