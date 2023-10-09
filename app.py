@@ -40,7 +40,7 @@ class Room(db.Model):
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Hello Hiroki Hiroki"
+    return "Hello Hiroki Hiroki Super"
 
 @app.route('/user/<username>', methods=['GET'])
 def get_user(username):
