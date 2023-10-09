@@ -47,12 +47,12 @@ def get_user(username):
     user = User.query.options(joinedload(User.characters)).filter_by(username=username).first()
     if user:
         user_data = {
-            'username': user.username,
-            'password': user.password,
-            'userLevel': user.userLevel,
-            'experience': user.experience,
-            'magicStone': user.magicStone,
-            'characters': [{'characterId': c.characterId, 'characterLevel': c.characterLevel, 'awakening': c.awakening, 'reliability': c.reliability, 'experience': c.experience} for c in user.characters]
+            'Username': user.username,
+            'Password': user.password,
+            'UserLevel': user.userLevel,
+            'Experience': user.experience,
+            'MagicStone': user.magicStone,
+            'Characters': [{'CharacterId': c.characterId, 'CharacterLevel': c.characterLevel, 'Awakening': c.awakening, 'Reliability': c.reliability, 'Experience': c.experience} for c in user.characters]
         }
         return jsonify(user_data)
     else:
