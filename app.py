@@ -56,47 +56,47 @@ def get_user(username):
         }
         return jsonify(user_data)
     else:
-        return jsonify({'message': 'User not found!'}), 404
+        return jsonify({'Content': 'User not found!'}), 404
 
 @app.route('/user', methods=['POST'])
 def add_user():
     data = request.get_json()
-    if User.query.filter_by(username=data['username']).first():
-        return jsonify({'message': 'Username already exists.'}), 400
-    new_user = User(username=data['username'], password=data['password'], userLevel=1, experience=0, magicStone=0)
-    new_character = Character(characterId=0, characterLevel=3, awakening=0, reliability=0, experience=0, owner=data['username'])
-    new_character_2 = Character(characterId=1, characterLevel=5, awakening=0, reliability=0, experience=0, owner=data['username'])
-    new_character_3 = Character(characterId=2, characterLevel=4, awakening=0, reliability=0, experience=0, owner=data['username'])
+    if User.query.filter_by(username=data['Username']).first():
+        return jsonify({'Content': 'Username already exists.'}), 400
+    new_user = User(username=data['Username'], password=data['Password'], userLevel=1, experience=0, magicStone=0)
+    new_character = Character(characterId=0, characterLevel=3, awakening=0, reliability=0, experience=0, owner=data['Username'])
+    new_character_2 = Character(characterId=1, characterLevel=5, awakening=0, reliability=0, experience=0, owner=data['Username'])
+    new_character_3 = Character(characterId=2, characterLevel=4, awakening=0, reliability=0, experience=0, owner=data['Username'])
     db.session.add(new_user)
     db.session.add(new_character)
     db.session.add(new_character_2)
     db.session.add(new_character_3)
     db.session.commit()
-    return jsonify({'message': 'User added!'}), 201
+    return jsonify({'Content': 'User added!'}), 201
 
 @app.route('/room', methods=['GET'])
 def get_rooms():
     active_rooms = Room.query.filter_by(active=True).all()
     if active_rooms:
-        rooms = [{'roomId': r.roomID, 'host': r.host} for r in active_rooms]
+        rooms = [{'RoomId': r.roomID, 'Host': r.host} for r in active_rooms]
         return jsonify(rooms)#リスト型で送信しちゃった
     else:
-        return jsonify({'message': 'No active rooms.'}), 404
+        return jsonify({'Content': 'No active rooms.'}), 404
     
 @app.route('/room', methods=['POST'])
 def add_room():
     app.logger.debug(f"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  add_room.")
     data = request.get_json()
-    room = Room.query.filter_by(roomID=data['roomId']).first()
+    room = Room.query.filter_by(roomID=data['RoomId']).first()
     if room:
         room.active = True
         db.session.commit()
-        return jsonify({'message': 'Room activity updated!'}), 200
+        return jsonify({'Content': 'Room activity updated!'}), 200
     else:
-        new_room = Room(roomID=data['roomId'], active=True, host=data['host'])
+        new_room = Room(roomID=data['RoomId'], active=True, host=data['Host'])
         db.session.add(new_room)
         db.session.commit()
-        return jsonify({'message': 'Room added!'}), 201
+        return jsonify({'Content': 'Room added!'}), 201
     
 @app.route('/room/<roomId>/heartbeat', methods=['POST'])
 def room_heartbeat(roomId):
@@ -106,41 +106,41 @@ def room_heartbeat(roomId):
         current_jst_time = datetime.now(jst).replace(microsecond=0)
         room.last_heartbeat = current_jst_time
         db.session.commit()
-        return jsonify({'message': 'Heartbeat received.'}), 200
+        return jsonify({'Content': 'Heartbeat received.'}), 200
     else:
-        return jsonify({'message': 'Room not found.'}), 404
+        return jsonify({'Content': 'Room not found.'}), 404
 
 @app.route('/user/save', methods=['POST'])
 def save_user_data():
     data = request.get_json()
     if not data:
-        return jsonify({'message': 'Bad Request'}), 400
-    username = data.get('username')
+        return jsonify({'Content': 'Bad Request'}), 400
+    username = data.get('Username')
     user = User.query.filter_by(username=username).first()
     if not user:
-        return jsonify({'message': 'User not found!'}), 404
+        return jsonify({'Content': 'User not found!'}), 404
     # ユーザの基本情報をアップデート
-    user.userLevel = data.get('userLevel')
-    user.experience = data.get('experience')
-    user.magicStone = data.get('magicStone')
+    user.userLevel = data.get('UserLevel')
+    user.experience = data.get('Experience')
+    user.magicStone = data.get('MagicStone')
     # キャラクター情報のアップデート
-    for char_data in data.get('characters'):
-        character = Character.query.filter_by(owner=username, characterId=char_data.get('characterId')).first()
+    for char_data in data.get('Characters'):
+        character = Character.query.filter_by(owner=username, characterId=char_data.get('CharacterId')).first()
         if character:
-            character.characterLevel = char_data.get('characterLevel')
-            character.awakening = char_data.get('awakening')
-            character.reliability = char_data.get('reliability')
-            character.experience = char_data.get('experience')
+            character.characterLevel = char_data.get('CharacterLevel')
+            character.awakening = char_data.get('Awakening')
+            character.reliability = char_data.get('Reliability')
+            character.experience = char_data.get('Experience')
         else:
-            new_character = Character(characterId=char_data.get('characterId'), characterLevel=char_data.get('characterLevel'), awakening=char_data.get('awakening'), reliability=char_data.get('reliability'), experience=char_data.get('experience'), owner=username )
+            new_character = Character(characterId=char_data.get('CharacterId'), characterLevel=char_data.get('CharacterLevel'), awakening=char_data.get('Awakening'), reliability=char_data.get('Reliability'), experience=char_data.get('Experience'), owner=username )
             db.session.add(new_character)
     try:
         db.session.commit()
     except Exception as e:
         app.logger.error(f"Failed to save user data: {str(e)}")
         db.session.rollback()
-        return jsonify({'message': 'Internal Server Error'}), 500
-    return jsonify({'message': 'User data updated successfully'}), 201
+        return jsonify({'Content': 'Internal Server Error'}), 500
+    return jsonify({'Content': 'User data updated successfully'}), 201
 
 
 with app.app_context():
