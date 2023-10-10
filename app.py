@@ -64,9 +64,9 @@ def add_user():
     if User.query.filter_by(username=data['Username']).first():
         return jsonify({'Content': 'Username already exists.'}), 400
     new_user = User(username=data['Username'], password=data['Password'], userLevel=1, experience=0, magicStone=0)
-    new_character = Character(characterId=0, characterLevel=3, awakening=0, reliability=0, experience=0, owner=data['Username'])
-    new_character_2 = Character(characterId=1, characterLevel=5, awakening=0, reliability=0, experience=0, owner=data['Username'])
-    new_character_3 = Character(characterId=2, characterLevel=4, awakening=0, reliability=0, experience=0, owner=data['Username'])
+    new_character = Character(characterId=0, characterLevel=6, awakening=0, reliability=0, experience=0, owner=data['Username'])
+    new_character_2 = Character(characterId=1, characterLevel=2, awakening=0, reliability=0, experience=0, owner=data['Username'])
+    new_character_3 = Character(characterId=2, characterLevel=3, awakening=0, reliability=0, experience=0, owner=data['Username'])
     db.session.add(new_user)
     db.session.add(new_character)
     db.session.add(new_character_2)
