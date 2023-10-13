@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 from sqlalchemy import text
 from pytz import timezone
 import logging
-from flask_cors import CORS, cross_origin
+#from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://myapp6user:140286TakaHiro@localhost/myapp6db_1'
 db = SQLAlchemy(app)
 
